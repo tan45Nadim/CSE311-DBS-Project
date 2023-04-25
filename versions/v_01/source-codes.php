@@ -2,6 +2,49 @@
     session_start();
     require 'db-connect.php';
 
+    // Update Doctor
+    if (isset($_POST['update_doctor'])) {
+        $dr_init = mysqli_real_escape_string($connect, $_POST['dr_init']);
+        $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
+        $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+
+        $query = "UPDATE doctor SET dr_name = '$dr_name', dept_init = '$dept_init', room_no = '$room_no'
+            WHERE dr_init = '$dr_init' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Updated Successfully!";
+            header("Location: search-doctor.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Not Updated!";
+            header("Location: search-doctor.php");
+            exit(0);
+        }
+    }
+
+    // Add Doctor
+    if (isset($_POST['add_doctor'])) {
+        $dr_init = mysqli_real_escape_string($connect, $_POST['dr_init']);
+        $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
+        $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+    }
+
+    $query = "INSERT INTO doctor (dr_init, dr_name, dept_init, room_no)
+            VALUES ('$dr_init', '$dr_name', '$dept_init', '$room_no')";
+    $query_run = mysqli_query($connect, $query);
+
+    if ($query_run) {
+        $_SESSION['message'] = "Doctor Added Successfully!";
+        header("Location: search-doctor.php");
+        exit(0);
+    } else {
+        $_SESSION['message'] = "Doctor Not Added!";
+        header("Location: search-doctor.php");
+        exit(0);
+    }
 
     //Update Department
     if (isset($_POST['update_department'])) {
