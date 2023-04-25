@@ -2,6 +2,52 @@
     session_start();
     require 'db-connect.php';
 
+
+    //Update Department
+    if (isset($_POST['update_department'])) {
+        $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
+        $dept_name = mysqli_real_escape_string($connect, $_POST['dept_name']);
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+        $dept_head_init = mysqli_real_escape_string($connect, $_POST['dept_head_init']);
+
+        $query = "UPDATE department SET dept_name = '$dept_name', room_no = '$room_no', 
+                dept_head_init = '$dept_head_init' where dept_init = '$dept_init' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Department Initial <b>{$dept_init}</b> Updated Successfully!";
+            header("Location: search-department.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Department Initial <b>{$dept_init}</b> Not Updated!";
+            header("Location: search-department.php");
+            exit(0);
+        }
+    }
+
+
+    // Add Department
+    if (isset($_POST['add_department'])) {
+        $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
+        $dept_name = mysqli_real_escape_string($connect, $_POST['dept_name']);
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+        $dept_head_init = mysqli_real_escape_string($connect, $_POST['dept_head_init']);
+    }
+
+    $query = "INSERT INTO department (dept_init, dept_name, room_no, dept_head_init)
+            VALUES ('$dept_init', '$dept_name', '$room_no', '$dept_head_init') ";
+    $query_run = mysqli_query($connect, $query);
+
+    if ($query_run) {
+        $_SESSION['message'] = "Department Added Successfully!";
+        header("Location: search-department.php");
+        exit(0);
+    } else {
+        $_SESSION['message'] = "Department Not Added!";
+        header("Location: search-department.php");
+        exit(0);
+    }
+
     // Update Purpose
     if (isset($_POST['update_purpose'])) {
         $purpose_id = mysqli_real_escape_string($connect, $_POST['purpose_id']);
