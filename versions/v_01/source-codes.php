@@ -2,6 +2,45 @@
     session_start();
     require 'db-connect.php';
 
+    // Update Room
+    if (isset($_POST['update_room'])) {
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+        $isAvailable = mysqli_real_escape_string($connect, $_POST['isAvailable']);
+
+        $query = "UPDATE hospital_room SET isAvailable = '$isAvailable'
+            WHERE room_no = '$room_no' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Room Number <b>{$room_no}</b> Updated Successfully!";
+            header("Location: search-room.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Room Number <b>{$room_no}</b> Not Updated!";
+            header("Location: search-room.php");
+            exit(0);
+        }
+    }
+
+    // Add Room
+    if (isset($_POST['add_room'])) {
+        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+    }
+
+    $query = "INSERT INTO hospital_room (room_no, isAvailable)
+            VALUES ('$room_no', '1')";
+    $query_run = mysqli_query($connect, $query);
+
+    if ($query_run) {
+        $_SESSION['message'] = "Room Added Successfully!";
+        header("Location: search-room.php");
+        exit(0);
+    } else {
+        $_SESSION['message'] = "Room Not Added!";
+        header("Location: search-room.php");
+        exit(0);
+    }
+
     // Update Charge Sheet
     if (isset($_POST['update_charge'])) {
         $charge_num = mysqli_real_escape_string($connect, $_POST['charge_num']);
