@@ -2,6 +2,48 @@
     session_start();
     require 'db-connect.php';
 
+    // Update Charge Sheet
+    if (isset($_POST['update_charge'])) {
+        $charge_num = mysqli_real_escape_string($connect, $_POST['charge_num']);
+        $charge_name = mysqli_real_escape_string($connect, $_POST['charge_name']);
+        $amount = mysqli_real_escape_string($connect, $_POST['amount']);
+
+        $query = "UPDATE charge_sheet SET charge_name = '$charge_name', amount = '$amount'
+            WHERE charge_num = '$charge_num' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Charge Number <b>{$charge_num}</b> Updated Successfully!";
+            header("Location: search-charge.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Charge Number <b>{$charge_num}</b> Not Updated!";
+            header("Location: search-charge.php");
+            exit(0);
+        }
+    }
+
+    // Add Charge Sheet
+    if (isset($_POST['add_charge'])) {
+        $charge_num = mysqli_real_escape_string($connect, $_POST['charge_num']);
+        $charge_name = mysqli_real_escape_string($connect, $_POST['charge_name']);
+        $amount = mysqli_real_escape_string($connect, $_POST['amount']);
+    }
+
+    $query = "INSERT INTO charge_sheet (charge_num, charge_name, amount)
+            VALUES ('$charge_num', '$charge_name', '$amount')";
+    $query_run = mysqli_query($connect, $query);
+
+    if ($query_run) {
+        $_SESSION['message'] = "Charge Added Successfully!";
+        header("Location: search-charge.php");
+        exit(0);
+    } else {
+        $_SESSION['message'] = "Charge Not Added!";
+        header("Location: search-charge.php");
+        exit(0);
+    }
+
     // Update Doctor
     if (isset($_POST['update_doctor'])) {
         $dr_init = mysqli_real_escape_string($connect, $_POST['dr_init']);
