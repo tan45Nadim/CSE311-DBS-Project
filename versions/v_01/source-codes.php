@@ -23,26 +23,27 @@
     }
 
     // Add Room
-    if (isset($_POST['add_room'])) {
+    else if (isset($_POST['add_room'])) {
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
-    }
 
-    $query = "INSERT INTO hospital_room (room_no, isAvailable)
+        $query = "INSERT INTO hospital_room (room_no, isAvailable)
             VALUES ('$room_no', '1')";
-    $query_run = mysqli_query($connect, $query);
+        $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Room Added Successfully!";
-        header("Location: search-room.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Room Not Added!";
-        header("Location: search-room.php");
-        exit(0);
+        if ($query_run) {
+            $_SESSION['message'] = "Room Added Successfully!";
+            header("Location: search-room.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Room Not Added!";
+            header("Location: search-room.php");
+            exit(0);
+        }
     }
+
 
     // Update Charge Sheet
-    if (isset($_POST['update_charge'])) {
+    else if (isset($_POST['update_charge'])) {
         $charge_num = mysqli_real_escape_string($connect, $_POST['charge_num']);
         $charge_name = mysqli_real_escape_string($connect, $_POST['charge_name']);
         $amount = mysqli_real_escape_string($connect, $_POST['amount']);
@@ -63,28 +64,30 @@
     }
 
     // Add Charge Sheet
-    if (isset($_POST['add_charge'])) {
+    else if (isset($_POST['add_charge'])) {
         $charge_num = mysqli_real_escape_string($connect, $_POST['charge_num']);
         $charge_name = mysqli_real_escape_string($connect, $_POST['charge_name']);
         $amount = mysqli_real_escape_string($connect, $_POST['amount']);
+
+        $query = "INSERT INTO charge_sheet (charge_num, charge_name, amount)
+        VALUES ('$charge_num', '$charge_name', '$amount')";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Charge Added Successfully!";
+            header("Location: search-charge.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Charge Not Added!";
+            header("Location: search-charge.php");
+            exit(0);
+        }
     }
 
-    $query = "INSERT INTO charge_sheet (charge_num, charge_name, amount)
-            VALUES ('$charge_num', '$charge_name', '$amount')";
-    $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Charge Added Successfully!";
-        header("Location: search-charge.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Charge Not Added!";
-        header("Location: search-charge.php");
-        exit(0);
-    }
 
     // Update Doctor
-    if (isset($_POST['update_doctor'])) {
+    else if (isset($_POST['update_doctor'])) {
         $dr_init = mysqli_real_escape_string($connect, $_POST['dr_init']);
         $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
@@ -106,29 +109,31 @@
     }
 
     // Add Doctor
-    if (isset($_POST['add_doctor'])) {
+    else if (isset($_POST['add_doctor'])) {
         $dr_init = mysqli_real_escape_string($connect, $_POST['dr_init']);
         $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
-    }
 
-    $query = "INSERT INTO doctor (dr_init, dr_name, dept_init, room_no)
+        $query = "INSERT INTO doctor (dr_init, dr_name, dept_init, room_no)
             VALUES ('$dr_init', '$dr_name', '$dept_init', '$room_no')";
-    $query_run = mysqli_query($connect, $query);
+        $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Doctor Added Successfully!";
-        header("Location: search-doctor.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Doctor Not Added!";
-        header("Location: search-doctor.php");
-        exit(0);
+        if ($query_run) {
+            $_SESSION['message'] = "Doctor Added Successfully!";
+            header("Location: search-doctor.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Doctor Not Added!";
+            header("Location: search-doctor.php");
+            exit(0);
+        }
     }
+
+
 
     //Update Department
-    if (isset($_POST['update_department'])) {
+    else if (isset($_POST['update_department'])) {
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $dept_name = mysqli_real_escape_string($connect, $_POST['dept_name']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
@@ -151,29 +156,31 @@
 
 
     // Add Department
-    if (isset($_POST['add_department'])) {
+    else if (isset($_POST['add_department'])) {
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $dept_name = mysqli_real_escape_string($connect, $_POST['dept_name']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
         $dept_head_init = mysqli_real_escape_string($connect, $_POST['dept_head_init']);
-    }
 
-    $query = "INSERT INTO department (dept_init, dept_name, room_no, dept_head_init)
+        $query = "INSERT INTO department (dept_init, dept_name, room_no, dept_head_init)
             VALUES ('$dept_init', '$dept_name', '$room_no', '$dept_head_init') ";
-    $query_run = mysqli_query($connect, $query);
+        $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Department Added Successfully!";
-        header("Location: search-department.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Department Not Added!";
-        header("Location: search-department.php");
-        exit(0);
+        if ($query_run) {
+            $_SESSION['message'] = "Department Added Successfully!";
+            header("Location: search-department.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Department Not Added!";
+            header("Location: search-department.php");
+            exit(0);
+        }
     }
+
+    
 
     // Update Purpose
-    if (isset($_POST['update_purpose'])) {
+    else if (isset($_POST['update_purpose'])) {
         $purpose_id = mysqli_real_escape_string($connect, $_POST['purpose_id']);
         $purpose_name = mysqli_real_escape_string($connect, $_POST['purpose_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
@@ -194,28 +201,29 @@
     }
     
     // Add Purpose
-    if (isset($_POST['add_purpose'])) {
+    else if (isset($_POST['add_purpose'])) {
         $purpose_id = mysqli_real_escape_string($connect, $_POST['purpose_id']);
         $purpose_name = mysqli_real_escape_string($connect, $_POST['purpose_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
+        $query = "INSERT INTO purpose (purpose_id, purpose_name, dept_init)
+        VALUES ('$purpose_id', '$purpose_name', '$dept_init')";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Purpose Added Successfully!";
+            header("Location: search-purpose.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Purpose Not Added!";
+            header("Location: search-purpose.php");
+            exit(0);
+        }
     }
 
-    $query = "INSERT INTO purpose (purpose_id, purpose_name, dept_init)
-            VALUES ('$purpose_id', '$purpose_name', '$dept_init')";
-    $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Purpose Added Successfully!";
-        header("Location: search-purpose.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Purpose Not Added!";
-        header("Location: search-purpose.php");
-        exit(0);
-    }
 
     // Update Patient
-    if (isset($_POST['update_patient'])) {
+    else if (isset($_POST['update_patient'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
         $p_name = mysqli_real_escape_string($connect, $_POST['p_name']);
         $p_age = mysqli_real_escape_string($connect, $_POST['p_age']);
@@ -251,7 +259,7 @@
 
 
     // Admit Patient
-    if (isset($_POST['admit_patient'])) {
+    else if (isset($_POST['admit_patient'])) {
         $p_name = mysqli_real_escape_string($connect, $_POST['p_name']);
         $p_age = mysqli_real_escape_string($connect, $_POST['p_age']);
         $p_sex = mysqli_real_escape_string($connect, $_POST['p_sex']);
@@ -259,18 +267,20 @@
         $address = mysqli_real_escape_string($connect, $_POST['address']);
         //$isResident = mysqli_real_escape_string($connect, $_POST['isResident']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
-    }
-    $query = "INSERT INTO patient (p_name, p_age, p_sex, mobile_no, address, isResident, room_no)
-            VALUES ('$p_name', '$p_age', '$p_sex', '$mobile_no', '$address', 1, '$room_no')";
-    $query_run = mysqli_query($connect, $query);
 
-    if ($query_run) {
-        $_SESSION['message'] = "Patient Admitted Successfully!";
-        header("Location: search-patient.php");
-        exit(0);
-    } else {
-        $_SESSION['message'] = "Patient Not Admitted!";
-        header("Location: search-patient.php");
-        exit(0);
+        $query = "INSERT INTO patient (p_name, p_age, p_sex, mobile_no, address, isResident, room_no)
+                VALUES ('$p_name', '$p_age', '$p_sex', '$mobile_no', '$address', 1, '$room_no')";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Patient Admitted Successfully!";
+            header("Location: search-patient.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Patient Not Admitted!";
+            header("Location: search-patient.php");
+            exit(0);
+        }
     }
+
 ?>
