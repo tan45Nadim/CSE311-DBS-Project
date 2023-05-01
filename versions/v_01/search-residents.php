@@ -55,13 +55,13 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped">
-                    <thead align="center">
+                    <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Mobile Number</th>
-                            <th>Room Number</th>
-                            <th>Action</th>
+                            <th class="text-center">ID</th>
+                            <th class="text-center"class="text-center">Name</th>
+                            <th class="text-center">Mobile Number</th>
+                            <th class="text-center">Room Number</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody align="center">  
@@ -93,7 +93,28 @@
                                         <td> <?= $patient['room_no']; ?> </td>
                                        
                                         <td>
-                                            <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
+                                            <!-- <div class="dropdown">       
+                                                <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
+                                                <button class="btn btn-primary dropdown" type="button" data-toggle="dropdown">Print
+                                                <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a href="search-patient.php">Link-1</a></li>
+                                                <li><a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>">Link-2</a></li>
+                                                </ul>
+                                            </div> -->
+
+                                            <div class="dropdown">
+                                                <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
+                                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Print
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="search-patient.php">Link-1</a>
+                                                    <a class="dropdown-item" href="generate-bill.php?p_id=<?= $patient['p_id']; ?>">Link-2</a>
+                                                </div>
+                                            </div>
+
                                         </td>
                                     </tr>
                                     <?php
