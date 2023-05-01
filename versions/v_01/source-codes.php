@@ -1,9 +1,57 @@
+<?php
+$con = new PDO('mysql:host=localhost;dbname=PatientQ', 'root', '');
+
+foreach($_POST['visit_count'] as $key => $value) {
+    $sql = 'INSERT INTO patient_record(visit_count, p_id, history, time_count) 
+        VALUES (:visit_count, :p_id, :history, :time_count)';
+    
+    $stmt = $con->prepare($sql);
+    $stmt->execute([
+        'visit_count' => $value,
+        'p_id' => $_POST['p_id'][$key],
+        'history' => $_POST['history'][$key],
+        'time_count' => $_POST['time_count'][$key]
+    ]);
+} echo 'Charges Inserted Successfully! <b>Redirecting to Residents....</b>';
+?>
+
 <?php 
     session_start();
     require 'db-connect.php';
 
+    // Inserting Information into Payment History
+    if (isset($_POST['payment_history'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
+        $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
+        $purpose_id = mysqli_real_escape_string($connect, $_POST['purpose_id']);
+        $assign_dr_init = mysqli_real_escape_string($connect, $_POST['assign_dr_init']);
+        $admission_date = mysqli_real_escape_string($connect, $_POST['admission_date']);
+        $release_date = mysqli_real_escape_string($connect, $_POST['release_date']);
+        $note = mysqli_real_escape_string($connect, $_POST['note']);
+
+        if ($note) {
+            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note, discount_pct)
+                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', '$note', 0)";
+        } else {
+            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note, discount_pct)
+                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', 'Nothing Mentionable!', 0)";
+        }
+
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Visit Count for <b>ID {$p_id}</b> Posted! Add Charges...";
+            header("Location: include-charges.php?p_id=$p_id");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Visit Count Not Posted!";
+            header("Location: include-charges.php?p_id=$p_id");
+            exit(0);
+        }
+    }
+
     // Update Room
-    if (isset($_POST['update_room'])) {
+    else if (isset($_POST['update_room'])) {
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
         $isAvailable = mysqli_real_escape_string($connect, $_POST['isAvailable']);
 
