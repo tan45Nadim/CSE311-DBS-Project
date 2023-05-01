@@ -1,10 +1,33 @@
 <?php
+session_start();
+require 'db-connect.php';
+
+if (isset($_POST['login_btn'])) { 
+    $user_name = mysqli_real_escape_string($connect, $_POST['username']);  
+    $pass_word = mysqli_real_escape_string($connect, $_POST['pass_word']); 
+
+    $query = "SELECT * FROM panel WHERE username ='$user_name' AND pass_word='$pass_word' ";
+    $query_run = mysqli_query($connect, $query);
+
+    if (mysqli_fetch_array($query_run)) {
+        $_SESSION['message'] = $user_name;
+
+        header('Location: admit-patient.php');
+
+    } else {
+        $_SESSION['status'] = "Username / Password is Invalid";
+        header('Location: login.php');
+    }
+    
+}
+?>
+
+<?php
 $con = new PDO('mysql:host=localhost;dbname=PatientQ', 'root', '');
 
 foreach($_POST['visit_count'] as $key => $value) {
     $sql = 'INSERT INTO patient_record(visit_count, p_id, history, time_count) 
         VALUES (:visit_count, :p_id, :history, :time_count)';
-    
     $stmt = $con->prepare($sql);
     $stmt->execute([
         'visit_count' => $value,
@@ -12,14 +35,14 @@ foreach($_POST['visit_count'] as $key => $value) {
         'history' => $_POST['history'][$key],
         'time_count' => $_POST['time_count'][$key]
     ]);
-} echo 'Charges Inserted Successfully! <b>Redirecting to Residents....</b>';
+} echo 'Charges Inserted Successfully!';
 ?>
 
 <?php 
     session_start();
     require 'db-connect.php';
 
-    // Inserting Information into Payment History
+    // Adding Values in Payment History
     if (isset($_POST['payment_history'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
         $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
@@ -30,11 +53,11 @@ foreach($_POST['visit_count'] as $key => $value) {
         $note = mysqli_real_escape_string($connect, $_POST['note']);
 
         if ($note) {
-            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note, discount_pct)
-                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', '$note', 0)";
+            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, Note)
+                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', '$note')";
         } else {
-            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note, discount_pct)
-                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', 'Nothing Mentionable!', 0)";
+            $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note)
+                VALUES ('$visit_count', '$p_id', '$purpose_id', 0, 0, '$admission_date', '$release_date', '$assign_dr_init', 'Nothing Mentionable!')";
         }
 
         $query_run = mysqli_query($connect, $query);
@@ -45,7 +68,7 @@ foreach($_POST['visit_count'] as $key => $value) {
             exit(0);
         } else {
             $_SESSION['message'] = "Visit Count Not Posted!";
-            header("Location: include-charges.php?p_id=$p_id");
+            header("Location: search-residents.php");
             exit(0);
         }
     }
