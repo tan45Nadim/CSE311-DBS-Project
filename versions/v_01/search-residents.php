@@ -5,9 +5,11 @@
 ?>
 
 <div class="container mt-5">
+
 <?php
     include ('message.php');
 ?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -93,25 +95,14 @@
                                         <td> <?= $patient['room_no']; ?> </td>
                                        
                                         <td>
-                                            <!-- <div class="dropdown">       
-                                                <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
-                                                <button class="btn btn-primary dropdown" type="button" data-toggle="dropdown">Print
-                                                <span class="caret"></span>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="search-patient.php">Link-1</a></li>
-                                                <li><a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>">Link-2</a></li>
-                                                </ul>
-                                            </div> -->
-
                                             <div class="dropdown">
                                                 <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
                                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Print
+                                                    Payment
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                                    <a class="dropdown-item" href="search-patient.php">Link-1</a>
-                                                    <a class="dropdown-item" href="generate-bill.php?p_id=<?= $patient['p_id']; ?>">Link-2</a>
+                                                    <a class="dropdown-item" href="include-discount.php?p_id=<?= $patient['p_id']; ?>">Add Discount</a>
+                                                    <a class="dropdown-item" href="generate-receipt.php?p_id=<?= $patient['p_id']; ?>">Generate Receipt</a>
                                                 </div>
                                             </div>
 

@@ -19,7 +19,28 @@ foreach($_POST['visit_count'] as $key => $value) {
     session_start();
     require 'db-connect.php';
 
-    if (isset($_POST['login_btn'])) { 
+    if (isset($_POST['apply_discount'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
+        $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
+        $discount_pct = mysqli_real_escape_string($connect, $_POST['discount_pct']);  
+        
+        $query = "UPDATE payment_history  SET discount_pct = '$discount_pct'
+                WHERE visit_count = $visit_count AND p_id = $p_id ";
+        $query_run = mysqli_query($connect, $query);
+        
+        if ($query_run) {
+            $_SESSION['message'] = "Visit Count for <b>ID {$p_id}</b> Posted! Add Charges...";
+            header("Location: search-residents.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Visit Count Not Posted!";
+            header("Location: search-residents.php");
+            exit(0);
+        }
+        
+    }
+
+    else if (isset($_POST['login_btn'])) { 
         $user_name = mysqli_real_escape_string($connect, $_POST['username']);  
         $pass_word = mysqli_real_escape_string($connect, $_POST['pass_word']); 
     
@@ -75,7 +96,7 @@ foreach($_POST['visit_count'] as $key => $value) {
         $isAvailable = mysqli_real_escape_string($connect, $_POST['isAvailable']);
 
         $query = "UPDATE hospital_room SET isAvailable = '$isAvailable'
-            WHERE room_no = '$room_no' ";
+                WHERE room_no = '$room_no' ";
         $query_run = mysqli_query($connect, $query);
         if ($query_run) {
             $_SESSION['message'] = "Room Number <b>{$room_no}</b> Updated Successfully!";
