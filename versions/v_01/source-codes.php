@@ -19,22 +19,61 @@ foreach($_POST['visit_count'] as $key => $value) {
     session_start();
     require 'db-connect.php';
 
-    if (isset($_POST['apply_discount'])) {
+    if (isset($_POST['paid_amount'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
         $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
-        $discount_pct = mysqli_real_escape_string($connect, $_POST['discount_pct']);  
-        
-        $query = "UPDATE payment_history  SET discount_pct = '$discount_pct'
-                WHERE visit_count = $visit_count AND p_id = $p_id ";
-        $query_run = mysqli_query($connect, $query);
-        
-        if ($query_run) {
-            $_SESSION['message'] = "Visit Count for <b>ID {$p_id}</b> Posted! Add Charges...";
-            header("Location: search-residents.php");
+        $paid = mysqli_real_escape_string($connect, $_POST['paid_amount']);
+        $payable_amount = mysqli_real_escape_string($connect, $_POST['payable_amount']);
+
+
+        $query = "UPDATE payment_history  SET paid = '$paid', payable_amount = '$payable_amount'
+                WHERE visit_count = $visit_count AND p_id = $p_id; ";
+        $query_run1 = mysqli_query($connect, $query);
+
+        $query = "UPDATE hospital_room SET isAvailable = '1' WHERE room_no = ( SELECT patient.room_no 
+                FROM patient WHERE p_id = $p_id); ";
+        $query_run2= mysqli_query($connect, $query);
+
+        $query = "UPDATE patient SET isResident = '0', room_no = NULL WHERE p_id = $p_id; ";
+        $query_run3 = mysqli_query($connect, $query);
+
+    
+        if ($query_run1 and $query_run2 and $query_run3) {
+            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Posted!";
+            header("Location: generate-receipt.php?p_id={$p_id}&visit_count={$visit_count}");
             exit(0);
         } else {
-            $_SESSION['message'] = "Visit Count Not Posted!";
+            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Not Posted!";
+            // header("Location: payment-review.php");
+            header("Location: generate-receipt.php");
+            exit(0);
+        }
+        
+    }
+
+    else if (isset($_POST['apply_discount'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
+        $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
+        $discount_pct = mysqli_real_escape_string($connect, $_POST['discount_pct']);
+        $total_amount = mysqli_real_escape_string($connect, $_POST['total_amount']);
+
+        
+        if ($discount_pct >= 0 and $discount_pct <= 100) {
+            $query = "UPDATE payment_history  SET discount_pct = '$discount_pct', payable_amount = '$total_amount'
+                WHERE visit_count = $visit_count AND p_id = $p_id ";
+            $query_run = mysqli_query($connect, $query);
+        }
+        
+    
+        if ($query_run) {
+            $_SESSION['message'] = "Discount for <b>ID {$p_id}</b> Posted!";
+            header("Location: payment-review.php?p_id={$p_id}&visit_count={$visit_count}&discount_pct={$discount_pct}");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Discount for <b>ID {$p_id}</b> Not Posted!";
+            // header("Location: payment-review.php");
             header("Location: search-residents.php");
+
             exit(0);
         }
         
