@@ -180,12 +180,12 @@
                         <div class="row mb-3"> </div>
                             <div class="row">
                                 <div class="col-md-3 mb-3">
-                                <p class="h6">Payable Amount</p>
-                                <input type="number" name="payable_amount" class="form-control" value="<?=$dataTuple['total'] ?>" readonly>  
+                                <p class="h6">Total Amount</p>
+                                <input type="number" name="total_amount" class="form-control" value="<?=$dataTuple['total'] ?>" readonly>  
                             </div>
 
                             <div class="col-md-4 mb-3">
-                            <p class="h6">Enter Discount</p>
+                            <p class="h6">Enter Discount (%)</p>
                                 <input type="number" name="discount_pct" class="form-control" placeholder="Enter Discount Percentage" required>
                             </div>
                             <div class="col-md-5 mb-6">
