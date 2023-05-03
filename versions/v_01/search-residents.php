@@ -5,11 +5,9 @@
 ?>
 
 <div class="container mt-5">
-
 <?php
     include ('message.php');
 ?>
-
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
@@ -95,16 +93,19 @@
                                         <td> <?= $patient['room_no']; ?> </td>
                                        
                                         <td>
-                                            <div class="dropdown">
+                                        <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-primary stn-sm">Generate Bill</a>
+                                        <a href="include-discount.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-info stn-sm">Payment</a>
+
+                                            <!-- <div class="dropdown">
                                                 <a href="generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Generate Bill</a>
                                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     Payment
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                                     <a class="dropdown-item" href="include-discount.php?p_id=<?= $patient['p_id']; ?>">Add Discount</a>
-                                                    <a class="dropdown-item" href="generate-receipt.php?p_id=<?= $patient['p_id']; ?>">Generate Receipt</a>
+                                                    <a class="dropdown-item" href="payment-review.php?p_id=<?= $patient['p_id']; ?>">Payment Review</a>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                         </td>
                                     </tr>
