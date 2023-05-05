@@ -19,7 +19,34 @@ foreach($_POST['visit_count'] as $key => $value) {
     session_start();
     require 'db-connect.php';
 
-    if (isset($_POST['paid_amount'])) {
+    // Update Due 
+    if (isset($_POST['update_payment'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
+        $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
+        $adjust_due = mysqli_real_escape_string($connect, $_POST['adjust_due']);
+        $paid_amount = mysqli_real_escape_string($connect, $_POST['paid_amount']);
+        
+        $adjustDue = (int)$paid_amount + (int)$adjust_due;
+
+        $query = "UPDATE payment_history  SET paid = '$adjustDue'
+                WHERE visit_count = $visit_count AND p_id = $p_id; ";
+        $query_run = mysqli_query($connect, $query);
+
+    
+        if ($query_run) {
+            $_SESSION['message'] = "Due for <b>ID {$p_id}</b> Updated!";
+            header("Location: view-patient.php?p_id={$p_id}");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Due for <b>ID {$p_id}</b> Not Updated!";
+            header("Location: view-patient.php?p_id={$p_id}");
+            exit(0);
+        }
+        
+    }
+
+    // Payment Update
+    else if (isset($_POST['paid_amount'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
         $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
         $paid = mysqli_real_escape_string($connect, $_POST['paid_amount']);
@@ -56,15 +83,14 @@ foreach($_POST['visit_count'] as $key => $value) {
         $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
         $discount_pct = mysqli_real_escape_string($connect, $_POST['discount_pct']);
         $total_amount = mysqli_real_escape_string($connect, $_POST['total_amount']);
-
         
         if ($discount_pct >= 0 and $discount_pct <= 100) {
-            $query = "UPDATE payment_history  SET discount_pct = '$discount_pct', payable_amount = '$total_amount'
+            $payable_amount = $total_amount - ($total_amount * ($discount_pct / 100));
+            $query = "UPDATE payment_history  SET discount_pct = '$discount_pct', payable_amount = '$payable_amount'
                 WHERE visit_count = $visit_count AND p_id = $p_id ";
             $query_run = mysqli_query($connect, $query);
         }
         
-    
         if ($query_run) {
             $_SESSION['message'] = "Discount for <b>ID {$p_id}</b> Posted!";
             header("Location: payment-review.php?p_id={$p_id}&visit_count={$visit_count}&discount_pct={$discount_pct}");
