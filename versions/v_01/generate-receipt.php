@@ -32,23 +32,16 @@
                             $v_cnt = $_GET['visit_count'];
                         }
 
-                        if (!$_GET['discount_pct']) {
-                            if (isset($_GET['p_id'])) {
-                                $p_id = mysqli_real_escape_string($connect, $_GET['p_id']);
-                                $query = "SELECT discount_pct FROM payment_history where p_id = '$p_id' AND 
-                                        visit_count = '$v_cnt' ";
-                                $query_run = mysqli_query($connect, $query);
-    
-                                $dataTuple = mysqli_fetch_assoc($query_run);
-                                $discount = $dataTuple['discount_pct'];
-                            }
-                        } else {
-                            $discount = $_GET['discount_pct'];
-                        }
+                        if (isset($_GET['p_id'])) {
+                            $p_id = mysqli_real_escape_string($connect, $_GET['p_id']);
+                            $query = "SELECT discount_pct FROM payment_history where p_id = '$p_id' AND 
+                                    visit_count = '$v_cnt' ";
+                            $query_run = mysqli_query($connect, $query);
 
-                        
+                            $dataTuple = mysqli_fetch_assoc($query_run);
+                            $discount = $dataTuple['discount_pct'];
+                        }          
                     ?>
-                    
                         <form action="source-codes.php" method="POST">
                             <div class="row mb-3">
                                 <div class="col-md-4 mb-3"> </div>
@@ -199,7 +192,7 @@
                         $dataTuple = mysqli_fetch_assoc($query_run);
 
                         ?>
-                    
+
                         <div class="row mb-2"> </div>
 
                         <div class="row">
@@ -207,21 +200,16 @@
                                 <p class="h6">Total Amount (BDT)</p>
                                 <input type="number" name="total_amount" class="form-control" value="<?=$dataTuple['total']?>" readonly>
                             </div>
-                            <div class="col-md-7 mb-3">
-                                
-                            </div>
-                        </div>
+                            <div class="col-md-2 mb-3"> </div>
+                            <?php
+                                $query = "SELECT payable_amount, paid
+                                        FROM payment_history
+                                        WHERE p_id = '$p_id' and visit_count = '$v_cnt' ";
 
-                        <?php
-                            $query = "SELECT payable_amount, paid
-                                    FROM payment_history
-                                    WHERE p_id = '$p_id' and visit_count = '$v_cnt' ";
+                                $query_run = mysqli_query($connect, $query);
+                                $dataTuple = mysqli_fetch_assoc($query_run);
+                            ?>
 
-                            $query_run = mysqli_query($connect, $query);
-                            $dataTuple = mysqli_fetch_assoc($query_run);
-                        ?>
-
-                        <div class="row mb-6">
                             <div class="col-md-2 mb-3">
                                 <p class="h6">Discount (%)</p>
                                 <input type="number" name="discount_pct" class="form-control" value="<?=$discount?>" readonly>
@@ -231,9 +219,10 @@
                                 <input type="number" name="payable_amount" class="form-control" value="<?=$dataTuple['payable_amount']?>" readonly>
                             </div>
 
-                            <div class="col-md-1 mb-3">
-                                
-                            </div>
+                        </div>
+
+                        <div class="row mb-6">
+                            <div class="col-md-2 mb-3"></div>
 
                             <div class="col-md-3 mb-3">
                                 <p class="h6">Paid (BDT)</p>
@@ -254,8 +243,14 @@
                                 <p class="h6">Due (BDT)</p>
                                 <input type="number" name="due_amount" class="form-control mb-3"  value="<?=$dataTuple['due']?>" readonly>
                             </div>
-                        </div>
 
+                            <div class="col-md-4 mb-3">
+                                <p class="h6">&nbsp</p>
+                                <a href="update-payment.php?p_id=<?=$p_id?>&visit_count=<?=$v_cnt?>" class="btn btn-success">Update Payment</a>
+                            </div>
+                            <!-- <div class="col-md-1 mb-3"></div> -->
+                        </div>
+                        
                         </div>
                     </form>
                 </div>
