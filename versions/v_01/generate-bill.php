@@ -24,10 +24,11 @@
                     <?php
                         if (isset($_GET['p_id'])) {
                             $p_id = mysqli_real_escape_string($connect, $_GET['p_id']);
-                            $query = "SELECT (COUNT(visit_count) + 1) visit_count FROM payment_history where p_id = '$p_id' ";
+                            $query = "SELECT (COUNT(visit_count) + 1) AS visit_count FROM payment_history where p_id = '$p_id' ";
                             $query_run = mysqli_query($connect, $query);
 
                             $count = mysqli_fetch_assoc($query_run);
+                            $v_cnt = $count['visit_count'];
                         }
                     ?>
                     
@@ -36,7 +37,7 @@
                             <div class="col-md-4 mb-3"> </div>
                             <div class="col-md-2 mb-3">
                                 <p class="h6">Visit Count</p>
-                                <input type="number" name="visit_count" class="form-control" value="<?=$count['visit_count'] ?>" readonly>
+                                <input type="number" name="visit_count" class="form-control" value="<?=$v_cnt?>" readonly>
                             </div>
                             <div class="col-md-2 mb-3">
                                 <p class="h6">Patient ID</p>
