@@ -19,8 +19,65 @@ foreach($_POST['visit_count'] as $key => $value) {
     session_start();
     require 'db-connect.php';
 
+    // Delete Payment History
+    if (isset($_POST['delete_payment_history'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
+        $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
+        
+        $query = "DELETE FROM payment_history WHERE p_id = '$p_id' AND visit_count = '$visit_count' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Patient <b>ID {$dr_init}</b> For <b>Visit Count {$visit_count}</b> Deleted!";
+            header("Location: delete-payment-history.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Patient <b>ID {$dr_init}</b> For <b>Visit Count {$visit_count}</b> Not Deleted!";
+            header("Location: delete-payment-history.php");
+            exit(0);
+        }
+    }
+
+    // Delete Doctor
+    else if (isset($_POST['delete_doctor'])) {
+        $dr_init = mysqli_real_escape_string($connect, $_POST['delete_doctor']);
+        // direct fetch of attributes(value) from submit button
+        
+        $query = "DELETE FROM doctor WHERE dr_init = '$dr_init' ";
+        $query_run = mysqli_query($connect, $query);
+
+        if ($query_run) {
+            $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Deleted!";
+            header("Location: delete-doctor.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Not Deleted!";
+            header("Location: delete-doctor.php");
+            exit(0);
+        }
+    }
+
+    // Delete Patient
+    else if (isset($_POST['delete_patient'])) {
+        $p_id = mysqli_real_escape_string($connect, $_POST['delete_patient']);
+        
+        $query = "DELETE FROM patient WHERE p_id = '$p_id' ";
+        $query_run = mysqli_query($connect, $query);
+
+    
+        if ($query_run) {
+            $_SESSION['message'] = "Patient <b>ID {$p_id}</b> Deleted!";
+            header("Location: delete-patient.php");
+            exit(0);
+        } else {
+            $_SESSION['message'] = "Patient <b>ID {$p_id}</b> Not Deleted!";
+            header("Location: delete-patient.php");
+            exit(0);
+        }
+    }
+
     // Update Due 
-    if (isset($_POST['update_payment'])) {
+    else if (isset($_POST['update_payment'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['p_id']);
         $visit_count = mysqli_real_escape_string($connect, $_POST['visit_count']);
         $adjust_due = mysqli_real_escape_string($connect, $_POST['adjust_due']);

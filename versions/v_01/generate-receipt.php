@@ -104,10 +104,10 @@
                             <?php
                             if (isset($_GET['p_id'])) {
                                 $p_id = mysqli_real_escape_string($connect, $_GET['p_id']);
-                                $query = "SELECT purpose_name, dr_name, dept_name
-                                        FROM payment_history, purpose, doctor, department
+                                $query = "SELECT purpose_name, dept_name
+                                        FROM payment_history, purpose, department
                                         WHERE p_id = '$p_id' AND visit_count = '$v_cnt' AND payment_history.purpose_id = purpose.purpose_id 
-                                        AND payment_history.assign_dr_init = doctor.dr_init AND purpose.dept_init = department.dept_init; ";
+                                        AND purpose.dept_init = department.dept_init; ";
                                 $query_run = mysqli_query($connect, $query);
 
                                 $dataTuple = mysqli_fetch_assoc($query_run);
@@ -120,8 +120,23 @@
                                     <input type="text" name="purpose_name" class="form-control" value="<?=$dataTuple['purpose_name'] ?>" readonly>  
                                 </div>
                                 <div class="col-md-6 mb-2">
+                                    <?php
+                                        $query2 = "SELECT dr_name
+                                            FROM payment_history, doctor
+                                            WHERE p_id = '$p_id' AND visit_count = '$v_cnt' 
+                                            AND payment_history.assign_dr_init = doctor.dr_init;";
+                                        $query_run2 = mysqli_query($connect, $query2);
+
+                                        $dataTuple2 = mysqli_fetch_assoc($query_run2);
+                                    ?>
                                     <p class="h6">Doctor Name</p>
-                                    <input type="text" name="dr_name" class="form-control" value="<?=$dataTuple['dr_name'] ?>" readonly>  
+                                    
+                                    <?php  if ($dataTuple2['dr_name']):?>
+                                        <input type="text" name="dr_name" class="form-control" value="<?=$dataTuple2['dr_name']?>" readonly>
+                                    <?php  else:?>
+                                        <input type="text" name="dr_name" class="form-control" value="Doctor Not Found" readonly>
+                                    <?php endif; ?>
+
                                 </div>
                             </div>
 

@@ -83,7 +83,7 @@
                             $p_id = mysqli_real_escape_string($connect, $_GET['p_id']);
 
                             $query = 
-                                "SELECT payment_history.p_id, payment_history.visit_count, purpose_name, dr_name,
+                                "SELECT payment_history.p_id, payment_history.visit_count, purpose_name,
                                     (SELECT SUM(amount * time_count)
                                         FROM patient_record, charge_sheet
                                         WHERE payment_history.p_id = patient_record.p_id
@@ -91,9 +91,8 @@
                                         AND patient_record.history = charge_sheet.charge_num
                                         AND payment_history.p_id = '$p_id'
                                     ) AS total
-                                FROM payment_history, purpose, doctor
+                                FROM payment_history, purpose
                                 WHERE payment_history.purpose_id = purpose.purpose_id
-                                AND payment_history.assign_dr_init = doctor.dr_init
                                 AND payment_history.p_id = '$p_id'; ";
                             
                             $query_run = mysqli_query($connect, $query);
@@ -104,17 +103,33 @@
                                     <tr>
                                         <td> <?= $info['visit_count'] ?> </td>
                                         <td> <?= $info['purpose_name'] ?> </td>
-                                        <td> <?= $info['dr_name'] ?> </td>
+                                        <td> 
+                                            <?php
+                                            $v_cnt = $info['visit_count'];
+                                            $query2 = "SELECT dr_name
+                                                        FROM payment_history, doctor
+                                                        WHERE payment_history.assign_dr_init = doctor.dr_init
+                                                        AND p_id = '$p_id' AND visit_count = '$v_cnt' ";
+                                            
+                                            $query_run2 = mysqli_query($connect, $query2);
+                                            $dataTuple = mysqli_fetch_assoc($query_run2);
+                                            ?>
+                                            <?php  if ($dataTuple['dr_name']):?>
+                                                <?= $dataTuple['dr_name'] ?>
+                                            <?php  else:?>
+                                                Doctor Not Found
+                                            <?php endif; ?>
+                                        </td>
                                         <td> <?= $info['total'] ?> </td>
 
                                         <?php
                                         $v_cnt = $info['visit_count'];
-                                        $query2 = "SELECT (payable_amount - paid) AS paid
+                                        $query3 = "SELECT (payable_amount - paid) AS paid
                                             FROM payment_history
-                                            WHERE p_id = '$p_id' AND visit_count = '$v_cnt'; ";
+                                            WHERE p_id = '$p_id' AND visit_count = '$v_cnt' ";
 
-                                        $query_run2 = mysqli_query($connect, $query2);
-                                        $dataTuple = mysqli_fetch_assoc($query_run2);
+                                        $query_run3 = mysqli_query($connect, $query3);
+                                        $dataTuple = mysqli_fetch_assoc($query_run3);
                                         ?>
 
                                         <?php if($dataTuple['paid'] == 0): ?>
