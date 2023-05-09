@@ -13,7 +13,7 @@
     <div class="col-md-12 mb-3">
         <div class="card">
             <div class="card-header">
-                <h4>Search Doctor</h4>
+                <h4>Delete Doctor</h4>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -97,7 +97,9 @@
                                         <td> <?= $doctor['dept_init']; ?> </td>
                                         <td> <?= $doctor['room_no']; ?> </td>
                                         <td>
-                                            <a href="update-doctor.php?dr_init=<?= $doctor['dr_init']; ?>" class="btn btn-warning stn-sm">Update</a>
+                                            <form action="../roots/source-codes.php" method="POST">
+                                                <button type="submit" name="delete_doctor" value="<?=$doctor['dr_init'];?>" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
                                         </td>
                                     </tr>
                                     <?php
