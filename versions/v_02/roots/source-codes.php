@@ -43,10 +43,14 @@
         $dr_init = mysqli_real_escape_string($connect, $_POST['delete_doctor']);
         // direct fetch of attributes(value) from submit button
         
+        $query = "UPDATE hospital_room SET isAvailable = '1' WHERE room_no = (
+            SELECT room_no FROM doctor WHERE dr_init = '$dr_init'); ";
+        $query_run_room = mysqli_query($connect, $query);
+
         $query = "DELETE FROM doctor WHERE dr_init = '$dr_init' ";
         $query_run = mysqli_query($connect, $query);
 
-        if ($query_run) {
+        if ($query_run and $query_run_room) {
             $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Deleted!";
             header("Location: ../doctor/delete-doctor.php");
             exit(0);
@@ -60,12 +64,16 @@
     // Delete Patient
     else if (isset($_POST['delete_patient'])) {
         $p_id = mysqli_real_escape_string($connect, $_POST['delete_patient']);
+
+        $query = "UPDATE hospital_room SET isAvailable = '1' WHERE room_no = (
+            SELECT room_no FROM patient WHERE p_id = $p_id); ";
+        $query_run_room = mysqli_query($connect, $query);
         
         $query = "DELETE FROM patient WHERE p_id = '$p_id' ";
         $query_run = mysqli_query($connect, $query);
 
     
-        if ($query_run) {
+        if ($query_run and $query_run_room) {
             $_SESSION['message'] = "Patient <b>ID {$p_id}</b> Deleted!";
             header("Location: ../patient/delete-patient.php");
             exit(0);
@@ -112,22 +120,21 @@
 
         $query = "UPDATE payment_history  SET paid = '$paid', payable_amount = '$payable_amount'
                 WHERE visit_count = $visit_count AND p_id = $p_id; ";
-        $query_run1 = mysqli_query($connect, $query);
+        $query_run_payment = mysqli_query($connect, $query);
 
-        $query = "UPDATE hospital_room SET isAvailable = '1' WHERE room_no = ( SELECT patient.room_no 
-                FROM patient WHERE p_id = $p_id); ";
-        $query_run2= mysqli_query($connect, $query);
+        $query = "UPDATE hospital_room SET isAvailable = '1' WHERE room_no = (
+                    SELECT room_no FROM patient WHERE p_id = $p_id); ";
+        $query_run_room = mysqli_query($connect, $query);
 
         $query = "UPDATE patient SET isResident = '0', room_no = NULL WHERE p_id = $p_id; ";
-        $query_run3 = mysqli_query($connect, $query);
+        $query_run_patient = mysqli_query($connect, $query);
 
-    
-        if ($query_run1 and $query_run2 and $query_run3) {
-            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Posted!";
+        if ($query_run_payment and $query_run_patient and $query_run_room) {
+            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Updated & Released!";
             header("Location: ../payment/generate-receipt.php?p_id={$p_id}&visit_count={$visit_count}");
             exit(0);
         } else {
-            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Not Posted!";
+            $_SESSION['message'] = "Payment for <b>ID {$p_id}</b> Not Updated & Released!";
             // header("Location: payment-review.php");
             header("Location: ../payment/generate-receipt.php");
             exit(0);
@@ -154,12 +161,14 @@
             exit(0);
         } else {
             $_SESSION['message'] = "Discount for <b>ID {$p_id}</b> Not Posted!";
-            // header("Location: payment-review.php");
             header("Location: ../others/search-residents.php");
-
             exit(0);
         }
         
+    }
+
+    else if (isset($_POST['logout_btn'])) { 
+        header('Location: ../index.php');
     }
 
     else if (isset($_POST['login_btn'])) { 
@@ -171,12 +180,11 @@
     
         if (mysqli_fetch_array($query_run)) {
             $_SESSION['message'] = $user_name;
-    
-            header('Location: ../patient/search-patient.php');
+            header('Location: home.php');
     
         } else {
             $_SESSION['status'] = "Username / Password is Invalid";
-            header('Location: ../roots/login.php');
+            header('Location: ../index.php');
         }
         
     }
@@ -288,9 +296,11 @@
         $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+
         $query = "UPDATE doctor SET dr_name = '$dr_name', dept_init = '$dept_init', room_no = '$room_no'
             WHERE dr_init = '$dr_init' ";
         $query_run = mysqli_query($connect, $query);
+        
         if ($query_run) {
             $_SESSION['message'] = "Doctor Initial <b>{$dr_init}</b> Updated Successfully!";
             header("Location: ../doctor/search-doctor.php");
@@ -307,10 +317,17 @@
         $dr_name = mysqli_real_escape_string($connect, $_POST['dr_name']);
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+
         $query = "INSERT INTO doctor (dr_init, dr_name, dept_init, room_no)
             VALUES ('$dr_init', '$dr_name', '$dept_init', '$room_no')";
         $query_run = mysqli_query($connect, $query);
-        if ($query_run) {
+
+        $query = "UPDATE hospital_room
+                SET isAvailable = '0'
+                WHERE room_no = '$room_no' ";
+        $query_run_room = mysqli_query($connect, $query);
+
+        if ($query_run and $query_run_room) {
             $_SESSION['message'] = "Doctor Added Successfully!";
             header("Location: ../doctor/search-doctor.php");
             exit(0);
@@ -344,11 +361,17 @@
         $dept_init = mysqli_real_escape_string($connect, $_POST['dept_init']);
         $dept_name = mysqli_real_escape_string($connect, $_POST['dept_name']);
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
-        $dept_head_init = mysqli_real_escape_string($connect, $_POST['dept_head_init']);
+
         $query = "INSERT INTO department (dept_init, dept_name, room_no, dept_head_init)
-            VALUES ('$dept_init', '$dept_name', '$room_no', '$dept_head_init') ";
+            VALUES ('$dept_init', '$dept_name', '$room_no', NULL) ";
         $query_run = mysqli_query($connect, $query);
-        if ($query_run) {
+
+        $query = "UPDATE hospital_room
+                SET isAvailable = 0
+                WHERE room_no = '$room_no' ";
+        $query_run_room = mysqli_query($connect, $query);
+
+        if ($query_run and $query_run_room) {
             $_SESSION['message'] = "Department Added Successfully!";
             header("Location: ../department/search-department.php");
             exit(0);
@@ -404,20 +427,47 @@
         $p_sex = mysqli_real_escape_string($connect, $_POST['p_sex']);
         $mobile_no = mysqli_real_escape_string($connect, $_POST['mobile_no']);
         $address = mysqli_real_escape_string($connect, $_POST['address']);
-        $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
+        $room_no_admit = mysqli_real_escape_string($connect, $_POST['room_no_admit']);
+        $room_no_readmit = mysqli_real_escape_string($connect, $_POST['room_no_readmit']);
 
-        if ($room_no) {
+
+        if ($room_no_admit) {
             $query = "UPDATE patient SET p_name = '$p_name', p_age = '$p_age', p_sex = '$p_sex',
-                mobile_no = '$mobile_no', address = '$address', isResident = 1, room_no = '$room_no' 
+                mobile_no = '$mobile_no', address = '$address', isResident = 1, room_no = '$room_no_admit' 
+                where p_id = '$p_id' ";
+        } else if ($room_no_readmit) {
+            $query = "UPDATE patient SET p_name = '$p_name', p_age = '$p_age', p_sex = '$p_sex',
+                mobile_no = '$mobile_no', address = '$address', isResident = 1, room_no = '$room_no_readmit' 
                 where p_id = '$p_id' ";
         } else  {
             $query = "UPDATE patient SET p_name = '$p_name', p_age = '$p_age', p_sex = '$p_sex',
                 mobile_no = '$mobile_no', address = '$address'
                 where p_id = '$p_id' ";
         }
-        
         $query_run = mysqli_query($connect, $query);
-        if ($query_run) {
+
+        if ($room_no_readmit) {
+            $query = "UPDATE hospital_room
+                SET isAvailable = 0
+                WHERE room_no = '$room_no_readmit' ";
+                
+            $query_run_room = mysqli_query($connect, $query);
+
+            // $query = "SELECT (COUNT(visit_count) + 1) AS visit_count FROM payment_history where p_id = '$p_id' ";
+            // $query_run_vCount = mysqli_query($connect, $query);
+            // $count = mysqli_fetch_assoc($query_run_vCount);
+            // $v_cnt = $count['visit_count'];
+
+            // $query = "INSERT INTO payment_history (visit_count, p_id, purpose_id, payable_amount, paid, admission_date, release_date, assign_dr_init, note, discount_pct)
+            //     VALUES ('$v_cnt', '$p_id', NULL, 0, 0, NULL, NULL, NULL, NULL, 0)";
+            // $query_run_paymentHistory = mysqli_query($connect, $query);
+        }
+
+        if ($query_run and $query_run_room) {
+            $_SESSION['message'] = "Patient ID <b>{$p_id}</b> Re-Admitted Successfully!";
+            header("Location: ../patient/search-patient.php");
+            exit(0);
+        } else if ($query_run) {
             $_SESSION['message'] = "Patient ID <b>{$p_id}</b> Updated Successfully!";
             header("Location: ../patient/search-patient.php");
             exit(0);
@@ -437,10 +487,15 @@
         $room_no = mysqli_real_escape_string($connect, $_POST['room_no']);
 
         $query = "INSERT INTO patient (p_name, p_age, p_sex, mobile_no, address, isResident, room_no)
-                VALUES ('$p_name', '$p_age', '$p_sex', '$mobile_no', '$address', 1, '$room_no')";
-        $query_run = mysqli_query($connect, $query);
+                VALUES ('$p_name', '$p_age', '$p_sex', '$mobile_no', '$address', 1, '$room_no') ";
+        $query_run_admit = mysqli_query($connect, $query);
+         
+        $query = "UPDATE hospital_room
+                SET isAvailable = 0
+                WHERE room_no = '$room_no' ";
+        $query_run_room = mysqli_query($connect, $query);
         
-        if ($query_run) {
+        if ($query_run_admit and $query_run_room) {
             $_SESSION['message'] = "Patient Admitted Successfully!";
             header("Location: ../patient/search-patient.php");
             exit(0);
