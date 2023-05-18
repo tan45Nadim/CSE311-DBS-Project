@@ -13,7 +13,7 @@
     <div class="col-md-12 mb-3">
         <div class="card">
             <div class="card-header">
-                <h4>Search Patient</h4>
+                <h4>Search Residents</h4>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -44,18 +44,19 @@
         <div class="card">
             <div class="card-header">
                 <h4>Patient Details 
-                    <a href="../patient/seach-patient.php" class = "btn btn-success float-end">Patients List</a>
+                    <a href="../patient/search-patient.php" class = "btn btn-success float-end">Patients List</a>
                 </h4>
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped">
-                    <thead>
+                    <thead align="center">
                         <tr>
-                            <th class="text-center">ID</th>
-                            <th class="text-center"class="text-center">Name</th>
-                            <th class="text-center">Mobile Number</th>
-                            <th class="text-center">Room Number</th>
-                            <th class="text-center">Action</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Mobile Number</th>
+                            <th>Room Number</th>
+                            <th>Patient Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody align="center">  
@@ -83,9 +84,48 @@
                                         <td> <?= $patient['p_name']; ?> </td>                                       
                                         <td> <?= $patient['mobile_no']; ?> </td>
                                         <td> <?= $patient['room_no']; ?> </td>
+
+
+                                        <?php
+                                            $p_id = $patient['p_id'];
+                                            $query = "SELECT COUNT(visit_count) visit_count FROM payment_history where p_id = '$p_id' ";
+                                            $query_run_visit = mysqli_query($connect, $query);
+                                            $visitTuple = mysqli_fetch_assoc($query_run_visit);
+                                            $v_cnt = $visitTuple['visit_count'];
+                                            
+
+                                            $query = "SELECT COUNT(*) charge_count FROM patient_record where p_id = '$p_id' AND visit_count = '$v_cnt' ";
+                                            $query_run_charge = mysqli_query($connect, $query);
+                                            $chargeTuple = mysqli_fetch_assoc($query_run_charge);
+                                            $charge_cnt = $chargeTuple['charge_count'];
+
+                                            $query = "SELECT paid FROM payment_history where p_id = '$p_id' AND visit_count = '$v_cnt' ";
+                                            $query_run_paid = mysqli_query($connect, $query);
+                                            $paidTuple = mysqli_fetch_assoc($query_run_paid);
+                                            $paid = $paidTuple['paid'];
+                                            
+                                        ?>
+                                        <?php if (!$v_cnt): ?>
+                                            <td>New Patient</td>
+                                        <?php elseif ($v_cnt and $paid): ?>
+                                            <td>Readmitted</td>
+                                        <?php elseif ($v_cnt and !$paid and !$charge_cnt): ?>
+                                            <td>Add Charge</td>
+                                        <?php else: ?>
+                                            <td>Generated</td>
+                                        <?php endif; ?>
+
                                         <td>
-                                        <a href="../payment/generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-primary stn-sm">Generate Bill</a>
-                                        <a href="../payment/include-discount.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-info stn-sm">Payment</a>
+
+                                        <?php if (!$v_cnt): ?>
+                                            <a href="../payment/generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-success btn-sm" style="width:55%">Generate Bill</a>
+                                        <?php elseif ($v_cnt and $paid): ?>
+                                            <a href="../payment/generate-bill.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-success btn-sm" style="width:55%">Generate Bill</a>
+                                        <?php elseif ($v_cnt and !$paid and !$charge_cnt): ?>
+                                            <a href="../payment/include-charges.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning btn-sm" style="width:55%">Add Charge</a>
+                                        <?php else: ?>
+                                            <a href="../payment/include-discount.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-danger btn-sm" style="width:55%">Payment</a>
+                                        <?php endif; ?>
                                         </td>
                                     </tr>
                                     <?php

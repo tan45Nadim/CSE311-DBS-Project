@@ -1,5 +1,6 @@
 <?php
     error_reporting(0);
+    session_start();
     include ('../roots/db-connect.php');
     include('../includes/header.php');
 ?>
@@ -98,10 +99,11 @@
     <div class="row">
         <div class="col-md-2"> </div>
         <div class="col-md-8">
+        <?php include ('../roots/message.php'); ?>
             <div class="card shadow">
                 <div class="card-header">
                     <h4>Payment Review
-                        <a href="" class = "btn btn-danger float-end">Back</a>
+                    <a href="../payment/search-residents.php" class = "btn btn-danger float-end">Residents</a>
                     </h4>
                 </div>
                 <div class="card-body p-4">

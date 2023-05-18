@@ -1,5 +1,6 @@
 <?php
     error_reporting(0);
+    session_start();
     include('../includes/header.php');
     include ('../roots/db-connect.php');
 ?>
@@ -89,143 +90,144 @@
 ?>
 
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-2"> </div>
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header">
-                    <h4>Payment Review
-                        <a href="#" class = "btn btn-danger float-end">Back</a>
-                    </h4>
-                </div>
-                <div class="card-body p-4">
-                    <div id="show_alert"> </div>
-                    <form action="../roots/source-codes.php" method="POST">
-                        <div class="row mb-3">
-                            <div class="col-md-4 mb-3"> </div>
-                            <div class="col-md-2 mb-3">
-                                <p class="h6 text-center">Patient ID</p>
-                                <input type="number" name="p_id" class="form-control text-center" value="<?=$_GET['p_id']?>" readonly>
-                            </div>
-                            <div class="col-md-2 mb-3">
-                                <p class="h6 text-center">Visit Count</p>
-                                <input type="number" name="visit_count" class="form-control text-center" value="<?=$v_cnt?>" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3"> </div>
+<div class="row">
+    <div class="col-md-2"> </div>
+    <div class="col-md-8">
+    <?php include ('../roots/message.php'); ?>
+        <div class="card shadow">
+            <div class="card-header">
+                <h4>Payment Review
+                <a href="../payment/search-residents.php" class = "btn btn-danger float-end">Residents</a>
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div id="show_alert"> </div>
+                <form action="../roots/source-codes.php" method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3"> </div>
+                        <div class="col-md-2 mb-3">
+                            <p class="h6 text-center">Patient ID</p>
+                            <input type="number" name="p_id" class="form-control text-center" value="<?=$_GET['p_id']?>" readonly>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <p class="h6">Name</p>
-                                <input type="text" name="p_name" class="form-control" value="<?=$patientTuple['p_name'] ?>" readonly>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <p class="h6">Age</p>
-                                <input type="number" name="p_age" class="form-control" value="<?=$patientTuple['p_age'] ?>" readonly>  
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <p class="h6">Sex</p>
-                                <input type="text" name="p_sex" class="form-control" value="<?=$patientTuple['p_sex'] ?>" readonly>  
-                            </div>
+                        <div class="col-md-2 mb-3">
+                            <p class="h6 text-center">Visit Count</p>
+                            <input type="number" name="visit_count" class="form-control text-center" value="<?=$v_cnt?>" readonly>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <p class="h6">Date of Admission</p>
-                                <input type="text" name="admission_date" class="form-control" value="<?=$paymentTuple['admission_date'] ?>" readonly>
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <p class="h6">Date of Release</p>
-                                <input type="text" name="release_date" class="form-control" value="<?=$paymentTuple['release_date'] ?>" readonly>
-                            </div>
+                        <div class="col-md-4 mb-3"> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <p class="h6">Name</p>
+                            <input type="text" name="p_name" class="form-control" value="<?=$patientTuple['p_name'] ?>" readonly>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <p class="h6">Purpose Name</p>
-                                <input type="text" name="purpose_name" class="form-control" value="<?=$purposeDeptTuples['purpose_name'] ?>" readonly>  
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <p class="h6">Doctor Name</p>
-                                <?php  if ($doctorTuple['dr_name']):?>
-                                    <input type="text" name="dr_name" class="form-control" value="<?=$doctorTuple['dr_name']?>" readonly>
-                                <?php  else:?>
-                                    <input type="text" name="dr_name" class="form-control" value="Doctor Not Found" readonly>
-                                <?php endif; ?>
-                            </div>
+                        <div class="col-md-3 mb-2">
+                            <p class="h6">Age</p>
+                            <input type="number" name="p_age" class="form-control" value="<?=$patientTuple['p_age'] ?>" readonly>  
                         </div>
-                        <div class="row mb-5">
-                            <div class="col-md-6">
-                                <p class="h6">Department Name</p>
-                                <input type="name" name="dept_name" class="form-control" value="<?=$purposeDeptTuples['dept_name'] ?>" readonly>  
-                            </div>
-                            <div class="col-md-6"> </div>
+                        <div class="col-md-3 mb-2">
+                            <p class="h6">Sex</p>
+                            <input type="text" name="p_sex" class="form-control" value="<?=$patientTuple['p_sex'] ?>" readonly>  
                         </div>
-                        <table class="table table-bordered table-striped">
-                            <thead align="center">
-                                <tr>
-                                    <th>Charge Number</th>
-                                    <th>Charge Name</th>
-                                    <th>Amount (BDT)</th>
-                                    <th>Time Count</th>
-                                    <th>Subtotal (BDT)</th>
-                                </tr>
-                            </thead>
-                            <tbody align="center">  
-                                <?php
-                                    if (mysqli_num_rows($query_run_charges) > 0) {
-                                        foreach ($query_run_charges as $charge) {
-                                            ?>
-                                            <tr>
-                                                <td> <?= $charge['charge_num']; ?> </td>
-                                                <td> <?= $charge['charge_name']; ?> </td>
-                                                <td> <?= $charge['amount']; ?> </td>
-                                                <td> <?= $charge['time_count']; ?> </td>
-                                                <td> <?= $charge['subtotal']; ?> </td>
-                                            </tr>
-                                            <?php
-                                        }
-                                    } else {
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <p class="h6">Date of Admission</p>
+                            <input type="text" name="admission_date" class="form-control" value="<?=$paymentTuple['admission_date'] ?>" readonly>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <p class="h6">Date of Release</p>
+                            <input type="text" name="release_date" class="form-control" value="<?=$paymentTuple['release_date'] ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <p class="h6">Purpose Name</p>
+                            <input type="text" name="purpose_name" class="form-control" value="<?=$purposeDeptTuples['purpose_name'] ?>" readonly>  
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <p class="h6">Doctor Name</p>
+                            <?php  if ($doctorTuple['dr_name']):?>
+                                <input type="text" name="dr_name" class="form-control" value="<?=$doctorTuple['dr_name']?>" readonly>
+                            <?php  else:?>
+                                <input type="text" name="dr_name" class="form-control" value="Doctor Not Found" readonly>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <p class="h6">Department Name</p>
+                            <input type="name" name="dept_name" class="form-control" value="<?=$purposeDeptTuples['dept_name'] ?>" readonly>  
+                        </div>
+                        <div class="col-md-6"> </div>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead align="center">
+                            <tr>
+                                <th>Charge Number</th>
+                                <th>Charge Name</th>
+                                <th>Amount (BDT)</th>
+                                <th>Time Count</th>
+                                <th>Subtotal (BDT)</th>
+                            </tr>
+                        </thead>
+                        <tbody align="center">  
+                            <?php
+                                if (mysqli_num_rows($query_run_charges) > 0) {
+                                    foreach ($query_run_charges as $charge) {
                                         ?>
-                                            <tr>
-                                                <td colspan="5">No Record Found!</td>
-                                            </tr>
+                                        <tr>
+                                            <td> <?= $charge['charge_num']; ?> </td>
+                                            <td> <?= $charge['charge_name']; ?> </td>
+                                            <td> <?= $charge['amount']; ?> </td>
+                                            <td> <?= $charge['time_count']; ?> </td>
+                                            <td> <?= $charge['subtotal']; ?> </td>
+                                        </tr>
                                         <?php
                                     }
-                                ?>
-                            </tbody>                   
-                        </table>
-                        <div class="row mb-2"> </div>
-                        <div class="row">
-                            <div class="col-md-5 mb-3">
-                                <p class="h6">Total Amount (BDT)</p>
-                                <input type="number" name="total_amount" class="form-control" value="<?=$discPayable['payable_amount']?>" readonly>
-                            </div>
-                            <div class="col-md-7 mb-3"> </div>
+                                } else {
+                                    ?>
+                                        <tr>
+                                            <td colspan="5">No Record Found!</td>
+                                        </tr>
+                                    <?php
+                                }
+                            ?>
+                        </tbody>                   
+                    </table>
+                    <div class="row mb-2"> </div>
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <p class="h6">Total Amount (BDT)</p>
+                            <input type="number" name="total_amount" class="form-control" value="<?=$discPayable['payable_amount']?>" readonly>
                         </div>
-                        <div class="row mb-6">
-                            <div class="col-md-2 mb-3">
-                                <p class="h6">Discount (%)</p>
-                                <input type="number" name="discount_pct" class="form-control" value="<?=$discount?>" readonly>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <p class="h6">After Discount (BDT)</p>
-                                <input type="number" name="payable_amount" class="form-control" value="<?=$discPayable['afterDisc']?>" readonly>
-                            </div>
-                            <div class="col-md-1 mb-3"> </div>
-                            <div class="col-md-4 mb-3">
-                                <p class="h6">Paid</p>
-                                <input type="number" name="paid_amount" class="form-control mb-3" placeholder="Enter Paid Amount" required>
-                            </div>
-                            <div class="col-md-2 mb-3">
-                                <p class="h6">&nbsp</p>
-                                <button type="submit" class="btn btn-success btn-block">Update</button>
-                            </div>
+                        <div class="col-md-7 mb-3"> </div>
+                    </div>
+                    <div class="row mb-6">
+                        <div class="col-md-2 mb-3">
+                            <p class="h6">Discount (%)</p>
+                            <input type="number" name="discount_pct" class="form-control" value="<?=$discount?>" readonly>
                         </div>
+                        <div class="col-md-3 mb-3">
+                            <p class="h6">After Discount (BDT)</p>
+                            <input type="number" name="payable_amount" class="form-control" value="<?=$discPayable['afterDisc']?>" readonly>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-1 mb-3"> </div>
+                        <div class="col-md-4 mb-3">
+                            <p class="h6">Paid</p>
+                            <input type="number" name="paid_amount" class="form-control mb-3" placeholder="Enter Paid Amount" required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <p class="h6">&nbsp</p>
+                            <button type="submit" class="btn btn-success btn-block">Update</button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="col-md-2"> </div>
     </div>
+    <div class="col-md-2"> </div>
+</div>
 </div>
 
 <?php

@@ -70,7 +70,7 @@
             <div class="card shadow">
                 <div class="card-header">
                     <h4>Receipt Generation
-                        <a href="" class = "btn btn-danger float-end">Back</a>
+                    <a href="../payment/search-residents.php" class = "btn btn-danger float-end">Residents</a>
                     </h4>
                 </div>
                 <div class="card-body p-4">

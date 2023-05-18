@@ -12,16 +12,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PatientQ - Generate Bill</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.1/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../navbar/style.css" />
 </head>
 <body>
-
+<?php
+  include('../navbar/navmenu.php');
+?>
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="card shadow">
                 <div class="card-header">
                     <h4>Bill Generation
-                        <a href="search-department.php" class="btn btn-danger float-end">Dont's Click</a>
+                    <a href="../payment/search-residents.php" class = "btn btn-danger float-end">Residents</a>
                     </h4>
                 </div>
                 <div class="card-body p-4">
@@ -110,11 +115,11 @@
                                     <p class="h6">Charge Number</p>
                                     <input type="text" name="history[]" class="form-control" placeholder="Charge Number" required>
                                 </div>
-                                <div class="col-md-5 mb-2">
+                                <div class="col-md-4 mb-2">
                                     <p class="h6">Time Count</p>
                                     <input type="number" name="time_count[]" class="form-control" placeholder="Time Count" required>
                                 </div>
-                                <div class="col-md-2 mb-2 d-grid">
+                                <div class="col-md-3 mb-2 d-grid">
                                     <p class="h6">&nbsp</p>
                                     <button class="btn btn-secondary add_charge_btn">Add Charge</button>
                                 </div>
@@ -130,14 +135,46 @@
             </div>
         </div>
         
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="card shadow">
                 <div class="card-header">
-                    <h4>Ref Charge Sheet
-                        <!-- <a href="search-department.php" class = "btn btn-danger float-end">Dont's Click</a> -->
-                    </h4>
+                    <h4>Ref. Charge Sheet</h4>
                 </div>
-                <div class="card-body p-4"> </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead align="center">
+                            <tr>
+                                <th>Charge Number</th>
+                                <th>Charge Name</th>
+                                <th>Amount (BDT)</th>
+                            </tr>
+                        </thead>
+                        <tbody align="center">  
+                            <?php
+                                $query = "SELECT * FROM charge_sheet";
+                                $query_run = mysqli_query($connect, $query);
+
+                                if (mysqli_num_rows($query_run) > 0) {
+                                    foreach ($query_run as $charge) {
+                                        ?>
+                                        <tr>
+                                            <td> <?= $charge['charge_num']; ?> </td>
+                                            <td> <?= $charge['charge_name']; ?> </td>
+                                            <td> <?= $charge['amount']; ?> </td>                                            
+                                        </tr>
+                                        <?php
+                                    }
+                                } else {
+                                    ?>
+                                        <tr>
+                                            <td colspan="3">No Record Found!</td>
+                                        </tr>
+                                    <?php
+                                }
+                            ?>
+                        </tbody>                   
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -158,10 +195,10 @@
                                 <div class="col-md-5 mb-2">
                                     <input type="text" name="history[]" class="form-control" placeholder="Charge Number" required>
                                 </div>
-                                <div class="col-md-5 mb-2">
+                                <div class="col-md-4 mb-2">
                                     <input type="number" name="time_count[]" class="form-control" placeholder="Time Count" required>
                                 </div>
-                                <div class="col-md-2 mb-2 d-grid">
+                                <div class="col-md-3 mb-2 d-grid">
                                     <button class="btn btn-danger remove_charge_btn">Remove</button>
                                 </div>
                             </div>`);
@@ -188,7 +225,7 @@
                     $("#show_alert").html(`<div class="alert alert-success" role="alert">${response}</div>`);
                     setTimeout(function() {
                         window.location.href = "search-residents.php";
-                    }, 5000);
+                    }, 3000);
                 }
             });
         });
