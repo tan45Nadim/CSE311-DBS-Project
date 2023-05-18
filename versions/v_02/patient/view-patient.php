@@ -1,6 +1,7 @@
 <?php
     error_reporting(0);
-    require '../roots/db-connect.php';
+    session_start();
+    include('../roots/db-connect.php');
     include('../includes/header.php');
 ?> 
 
@@ -30,6 +31,7 @@
     <div class="row">
        <div class="col-md-2"> </div> 
        <div class="col-md-8">
+        <?php include ('../roots/message.php'); ?>
         <div class="card shadow">
             <div class="card-header">
                 <h4>View Patient

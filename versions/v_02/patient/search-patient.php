@@ -60,6 +60,7 @@
                             <th>Age</th>
                             <th>Sex</th>
                             <th>Mobile Number</th>
+                            <th>isAdmitted</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -107,9 +108,20 @@
 
                                         <td> <?= $patient['mobile_no']; ?> </td>
 
+                                        <?php if($patient['isResident'] == '1'): ?>
+                                            <td>Yes</td>
+                                        <?php else: ?>
+                                            <td>No</td>
+                                        <?php endif; ?>
+
                                         <td>
-                                            <a href="../patient/view-patient.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-info stn-sm">View</a>
-                                            <a href="../patient/update-patient.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning stn-sm">Update</a>
+                                            <a href="../patient/view-patient.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-info btn-sm" style="width:30%">View</a>
+
+                                            <?php if($patient['isResident'] == '1'): ?>
+                                                <a href="../patient/update-patient.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-warning btn-sm" style="width:30%">Update</a>
+                                            <?php else: ?>
+                                                <a href="../patient/update-patient.php?p_id=<?= $patient['p_id']; ?>" class="btn btn-success btn-sm" style="width:30%">Re Admit</a>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                     <?php

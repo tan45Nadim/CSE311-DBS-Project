@@ -1,6 +1,7 @@
 <?php
     session_start();
     include('../includes/header.php');
+    include ('../roots/db-connect.php');
 ?>
 
 <div class="container mt-5">
@@ -8,7 +9,7 @@
 <?php include('../roots/message.php'); ?>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
         <div class="card">
             <div class="card-header">
                 <h4>Admit Patient
@@ -48,6 +49,32 @@
             </div>
         </div>
     </div>
+    <div class="col-md-4" style="margin-top:401px">
+        <div class="card">
+            <div class="card-header">
+                <h4>Available Rooms</h4>
+            </div>
+            <div class="card-body">
+                <?php
+                    $query = "SELECT room_no FROM hospital_room WHERE isAvailable = '1' AND (room_no LIKE 'NB%' OR room_no LIKE 'SB%')";
+                    $query_run_available_room = mysqli_query($connect, $query);
+
+                    if (mysqli_num_rows($query_run_available_room) > 0) {
+                        foreach ($query_run_available_room as $room) {
+                            ?>
+                                <?= $room['room_no'] ?>, &nbsp &nbsp                            
+                            <?php
+                        }
+                    } else {
+                        ?>
+                           No Room Available.
+                        <?php
+                    }
+                ?>
+            </div>
+        </div>
+    </div>
+    
 </div>
 </div>
 
