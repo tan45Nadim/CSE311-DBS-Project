@@ -10,7 +10,7 @@
 <?php include('../roots/message.php'); ?>
 
 <div class="row">
-    <div class="col-md12">
+    <div class="col-md-8">
         <div class="card">
             <div class="card-header">
                 <h4>Update Department
@@ -35,18 +35,17 @@
                             </div>
                             <div class="mb-3">
                                 <label>Depeartment Room</label>
-                                <input type="text" name = "room_no" class="form-control" value="<?= $dept_arr['room_no'] ?>" required>
+                                <input type="text" name = "room_no" class="form-control" value="<?= $dept_arr['room_no'] ?>" readonly>
                             </div> 
                             <div class="mb-3">
                                 <label>Head of Depeartment</label>
                                 <input type="text" name = "dept_head_init" class="form-control" value="<?= $dept_arr['dept_head_init'] ?>" required>
                             </div> 
                             <div class="mb-3">
-                                <button type="submit" name="update_department" class="btn btn-primary">Update Purpose</button>
+                                <button type="submit" name="update_department" class="btn btn-success">Update Department</button>
                             </div>
                         </form>                                
                         <?php
-
                     } else {
                         echo "<h4>No Such Department Found!</h4>";
                     }
@@ -57,6 +56,53 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-4">
+    <div class="card">
+            <div class="card-header">
+                <h4>Doctor Details </h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead align="center">
+                        <tr>
+                            <th>Doctor Initial</th>
+                            <th>Doctor Name</th>
+                        </tr>
+                    </thead>
+                    <tbody align="center">  
+                        <?php
+                            if (isset($_GET['dept_init'])) {
+                                $dept_init = mysqli_real_escape_string($connect, $_GET['dept_init']);
+                            }
+                            
+                            $query = "SELECT * FROM doctor WHERE dept_init = '$dept_init'; ";
+                            $query_run = mysqli_query($connect, $query);
+
+                            if (mysqli_num_rows($query_run) > 0) {
+                                foreach ($query_run as $doctor) {
+                                    ?>
+                                    <tr>
+                                        <td> <?= $doctor['dr_init']; ?> </td>
+                                        <td> <?= $doctor['dr_name']; ?> </td>
+                                    </tr>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                    <tr>
+                                        <td colspan="2">No Record Found!</td>
+                                    </tr>
+                                <?php
+                            }
+                        ?>
+                    </tbody>                   
+                </table>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 </div>
 
