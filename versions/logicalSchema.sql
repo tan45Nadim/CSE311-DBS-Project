@@ -1,3 +1,6 @@
+create database PatientQ;
+use PatientQ;
+
 create table patient (
     p_id int auto_increment,
     p_name varchar(30),
