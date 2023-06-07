@@ -119,6 +119,15 @@
 
                                         <?php
                                             $v_cnt = $info['visit_count'];
+
+                                            $query_check = "SELECT payable_amount
+                                                FROM payment_history
+                                                WHERE p_id = '$p_id' AND visit_count = '$v_cnt' ";
+
+                                            $query_run_payable = mysqli_query($connect, $query_check);
+                                            $payableAmount = mysqli_fetch_assoc($query_run_payable);
+
+                                                
                                             $query = "SELECT (payable_amount - paid) AS paid
                                                 FROM payment_history
                                                 WHERE p_id = '$p_id' AND visit_count = '$v_cnt' ";
@@ -127,7 +136,9 @@
                                             $paidAmount = mysqli_fetch_assoc($query_run_paid);
                                         ?>
 
-                                        <?php if($paidAmount['paid'] == 0): ?>
+                                        <?php if($payableAmount['payable_amount'] == 0): ?>
+                                            <td> Due </td>
+                                        <?php elseif($paidAmount['paid'] == 0): ?>
                                             <td> Paid </td>
                                         <?php elseif($paidAmount['paid'] > 0): ?>
                                             <td> Due </td>
