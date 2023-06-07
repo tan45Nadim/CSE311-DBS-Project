@@ -64,7 +64,8 @@ create table patient_record (
     visit_count smallint,
     p_id int,
     history varchar(30),
-    time_count smallint
+    time_count smallint,
+    primary key(visit_count, p_id, history)
 );
 
 create table charge_sheet (
